@@ -1,10 +1,14 @@
 import express from "express";
 import connectDB from "./src/mongoDB/connect.js";
 import dotenv from "dotenv";
+import { userRoutes } from "./src/Routes/userRoutes.js";
 
 const app = express();
 //initialize dotenv
 dotenv.config();
+
+//Routes
+app.use("/test",userRoutes)
 
 const MONGO_URL="mongodb+srv://thabang:thabang@mern-agency.tgen2fp.mongodb.net/?retryWrites=true&w=majority"
 const startServer = ()=>{
