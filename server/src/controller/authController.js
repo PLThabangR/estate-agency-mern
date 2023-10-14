@@ -2,22 +2,25 @@ import User from "../model/UserModel.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+//Sign-up new user
 export const signUp = async (req, res, next) => {
   const { username, password, email } = req.body;
 
-  if (username || email) {
-    next("User already taken");
-  }
+  //Check if user exist
+  const existingUser = await User.findOne({email})
+  if(existingUser){
+      next("Email Already taken please login")
+ }
   //Encrypt password with 10 as salt
   const hashedPassword = bcryptjs.hashSync(password, 10);
   //create a new user
   const newUser = new User({ username, email, password: hashedPassword });
   try {
-    await newUser.save();
+     await newUser.save();
     res.status(201).json({
       succes: true,
       message: "User created success",
-      user: {
+      newUser: {
         username: newUser.username,
         email: newUser.email,
       },
@@ -51,11 +54,14 @@ export const signIn = async (req, res, next) => {
       { id: validUser.id, secret: validUser._id },
       JWT_SECRET
     );
+
+    //Do not return the password to client
+    //const { password:pass,...rest} =validUser._doc;
+    validUser.password =undefined;
     res
-      .cookie("acces_token", { httpOnly: true })
+      .cookie("acces_token",token, { httpOnly: true })
       .status(200)
-      .json({ validUser ,
-        token
+      .json({ validUser,token
         });
   } catch (error) {
     next(error);
