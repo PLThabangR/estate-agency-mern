@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {useDispatch ,useSelector} from 'react-redux';
 import { signInSuccess,signInFailure,signStart } from '../redux/userSlice';
+import OAuth from '../components/OAuth';
 export default function SignIn() {
   //initialize dispatch to user redux functions
   const dispatch = useDispatch();
@@ -64,6 +65,7 @@ export default function SignIn() {
         >
           {loading ? 'Loading...' : 'Sign In'}
         </button>
+        <OAuth/>
         
       </form>
       <div className='flex gap-2 mt-5'>
