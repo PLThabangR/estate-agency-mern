@@ -1,9 +1,10 @@
 import express from 'express';
-import { signIn, signUp } from '../controller/authController.js';
+import { goolgeLogin, signIn, signUp } from '../controller/authController.js';
 
 const router = express.Router();
 
-router.post("/sign-up",signUp);
-router.post("/sign-in",signIn);
+router.post("/signup",signUp);
+router.post("/signin",signIn);
+router.post("/google",goolgeLogin)
 
 export  {router as authRoute} 

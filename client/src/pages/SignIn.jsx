@@ -20,7 +20,7 @@ export default function SignIn() {
     e.preventDefault();
     try {
      dispatch(signStart)
-      const res = await fetch('/api/auth/sign-in', {
+      const res = await fetch('/api/auth/signin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -29,6 +29,7 @@ export default function SignIn() {
       })
       
       const data = await res.json();
+      console.log(data);
       if (data.success === false) {
        dispatch(signInFailure(data.message))
         return;

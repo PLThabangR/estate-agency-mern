@@ -1,7 +1,9 @@
 import User from "../model/UserModel.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
-
+import {errorHandler} from '../middleware/errorHandler.js';
+//Create a json web token
+const JWT_SECRET ="thabangR20";
 //Sign-up new user
 export const signUp = async (req, res, next) => {
   const { username, password, email } = req.body;
@@ -39,17 +41,16 @@ export const signIn = async (req, res, next) => {
     const validUser = await User.findOne({ email });
     //if email is true
     if (!validUser) {
-      next(errorHandler(404, "User not found"));
+      return next(errorHandler(404, "User not found"));
     }
     //Check if password is true using bcrypt
     const validPassword = bcryptjs.compareSync(password, validUser.password);
     if (!validPassword) {
-      next(errorHandler(401, "Invalid Credentials"));
+    return  next(errorHandler(401, "Invalid Credentials"));
     }
 
     ///Add the cookie in the browser to authenticate the user
-    //Create a json web token
-    const JWT_SECRET ="thabangR20";
+    //const JWT_SECRET ="thabangR20";
     const token = jwt.sign(
       { id: validUser.id, secret: validUser._id },
       JWT_SECRET
@@ -67,3 +68,46 @@ export const signIn = async (req, res, next) => {
     next(error);
   }
 };
+
+//Google sign in
+export const goolgeLogin = async(req,res,next)=>{
+  //Get data from url
+  const {email,name,photoUrl} = req.body;
+  try{
+    //Check if user exists
+    const user = await User.findOne({email});
+    //the user exist we just want to authenticate the user
+    if(user){
+      const token =jwt.sign({id:user._id},JWT_SECRET);
+      //Hide password
+      const {password:pass,...rest}=user._doc;
+      //Return this information to the user
+      res.cookie('access_token',token,{httpOnly:true})
+      .status(200)
+      .json(rest)
+    }else{
+      ///create a password
+      //We generate 36 characters and get only 8 digits from that
+      const generatedPassword =Math.random().toString(36).slice(-8);
+      //we hashed the password
+      const hashedPassword = bcryptjs.hashSync(generatedPassword,10);
+      //create a new user
+      const newName = name.split(" ").join("").toLowerCase() + Math.random().toString(36).slice(-8);;
+      const newUser = new User({username:newName,email:email,password:hashedPassword,avatar:photoUrl});
+      //Save new user
+      await newUser.save();
+      //create a new token for the user
+      const token =jwt.sign({id:newUser._id},JWT_SECRET);
+     //Hide the password 
+      const {password:pass,...rest}=newUser._doc;
+      //return this to the user
+      res.cookie('access_token',token,{httpOnly:true})
+      .status(200)
+      .json(rest)
+
+    }
+
+  }catch(error){
+    next(error)
+  }
+}
