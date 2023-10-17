@@ -16,6 +16,10 @@ const {currentUser} = useSelector((state) => state.user);
       Update
     </button>
       </form>
+      <div className='flex justify-between mt-5'>
+      <span className='text-red-700 cursor-pointer'>Delete Account</span>
+      <span className='text-red-700 cursor-pointer'>SignOut</span>
+      </div>
 
     </div>
   )
