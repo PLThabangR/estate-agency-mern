@@ -93,17 +93,18 @@ export const goolgeLogin = async(req,res,next)=>{
       const hashedPassword = bcryptjs.hashSync(generatedPassword,10);
       //create a new user
       const newName = name.split(" ").join("").toLowerCase() + Math.random().toString(36).slice(-8);;
-      const newUser = new User({username:newName,email:email,password:hashedPassword,avatar:photoUrl});
+      const newUser = new User({username:newName,email:email,password:hashedPassword,avater:photoUrl});
       //Save new user
       await newUser.save();
       //create a new token for the user
       const token =jwt.sign({id:newUser._id},JWT_SECRET);
      //Hide the password 
       const {password:pass,...rest}=newUser._doc;
+      const password = undefined;
       //return this to the user
       res.cookie('access_token',token,{httpOnly:true})
       .status(200)
-      .json(rest)
+      .json(newUser)
 
     }
 
