@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "./cookie-parser
 import connectDB from "./src/mongoDB/connect.js";
 import dotenv from "dotenv";
 import { userRoutes } from "./src/Routes/userRoute.js";
@@ -8,6 +9,8 @@ import errorMiddleware from "./src/middleware/errorMiddlware.js";
 
 //initialize express
 const app = express();
+//Get cookie info
+app.use(cookieParser());
 
 //initialize dotenv
 dotenv.config();

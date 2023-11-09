@@ -1,15 +1,26 @@
 
 import { useSelector } from 'react-redux';
-import { useRef } from 'react';
+import { useEffect, useRef,useState } from 'react';
+import {getStorage,ref} from 'firebase/storage'
+import { app } from '../firebase';
 const Profile = () => {
   const fileRef = useRef(null)
 const {currentUser} = useSelector((state) => state.user);
+
+
+
+
+        //Firiebase rules for image uploading
+      // allow read, write: if 
+      // request.resource.size < 2*1024*1024 &&
+      // request.resource.contentType.matches('image/.*');
+
   return (
     <div className='p-3 max-w-lg mx-auto'>
     <h1 className='text-3xl font-semibold text-center my-5'>Profile</h1>
       <form className='flex flex-col gap-4'>
-      <input type="file" ref={fileRef} hidden/>
-      <img onClick={()=>fileRef.current.click()} src={currentUser.avater} alt='UserProfile'className='rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2'/>    
+     
+      <img src={currentUser.avater} alt='UserProfile'className='rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2'/>    
       
       <input type="text" id='username' placeholder='Username' className='border p-3 rounded-lg' />
       <input type="email" id='email' placeholder='Email' className='border p-3 rounded-lg' />
